@@ -1,8 +1,8 @@
 {
-  "TEST1234": {
-    "product": "Infinix Smart 8",
-    "status": "Shipped",
-    "trackingNumber": "TEST1234",
+  "TEST123": {
+    "product": "Infinix Smart 20",
+    "status": "DELIVERED",
+    "trackingNumber": "TEST123",
     "lastUpdate": "2026-06-14"
   }
 }
