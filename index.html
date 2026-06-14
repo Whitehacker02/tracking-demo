@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Your Order</title>
+    <style>
+        body { font-family: Arial; max-width: 600px; margin: 50px auto; padding: 20px; }
+        input, button { padding: 10px; font-size: 16px; margin: 5px; }
+        #result { margin-top: 20px; border-top: 1px solid #ccc; padding-top: 20px; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>📦 Track Your Goods</h1>
+    <p>Enter the tracking code you received from the admin:</p>
+    <input type="text" id="trackingCode" placeholder="e.g., abc-123-def" style="width: 70%;">
+    <button id="trackBtn">Track Order</button>
+    <div id="result"></div>
+
+    <script>
+        const trackBtn = document.getElementById('trackBtn');
+        const codeInput = document.getElementById('trackingCode');
+        const resultDiv = document.getElementById('result');
+
+        trackBtn.addEventListener('click', async () => {
+            const code = codeInput.value.trim();
+            if (!code) {
+                resultDiv.innerHTML = '<p class="error">Please enter a tracking code.</p>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<p>Searching...</p>';
+
+            try {
+                const response = await fetch(`/api/order?code=${encodeURIComponent(code)}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h3>✅ Order found</h3>
+                            <p><strong>Product:</strong> ${data.product}</p>
+                            <p><strong>Status:</strong> ${data.status}</p>
+                            <p><strong>Tracking number:</strong> ${data.trackingNumber || 'N/A'}</p>
+                            <p><strong>Last update:</strong> ${data.lastUpdate}</p>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<p class="error">❌ ${data.error || 'Order not found'}</p>`;
+                }
+            } catch (err) {
+                resultDiv.innerHTML = '<p class="error">Server error. Please try again later.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
+
